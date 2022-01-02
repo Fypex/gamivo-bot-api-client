@@ -16,8 +16,8 @@ class ProductResponseModel
     {
 
         $this->product_id = $offer['product_id'];
-        $this->name = $offer['$name'];
-        $this->slug = $offer['$slug'];
+        $this->name = $offer['name'];
+        $this->slug = $offer['slug'];
         $this->platform = $offer['platform'];
         $this->region = $offer['region'];
 
