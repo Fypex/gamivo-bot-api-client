@@ -3,6 +3,9 @@
 namespace Fypex\GamivoClient;
 
 use Fypex\GamivoClient\Denormalizer\Offers\OffersDenormalizer;
+use Fypex\GamivoClient\Denormalizer\Offers\SetExternalIdDenormalizer;
+use Fypex\GamivoClient\Models\Offer\OfferResponseModel;
+use Fypex\GamivoClient\Models\Offer\SetExternalIdResponseModel;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -124,7 +127,10 @@ class GamivoBotClient
         return $data;
     }
 
-    public function getOffers()
+    /**
+     * @return array<OfferResponseModel>
+     */
+    public function getOffers(): array
     {
 
         $request = $this->messageFactory->createRequest(
@@ -137,5 +143,26 @@ class GamivoBotClient
         $data = $this->handleResponse($response);
 
         return (new OffersDenormalizer())->denormalize($data);
+    }
+
+    public function setExternalId(int $offer_id, string $external_id): SetExternalIdResponseModel
+    {
+
+        $body = [
+            'offer_id' => $offer_id,
+            'external_id' => $external_id,
+        ];
+
+        $request = $this->messageFactory->createRequest(
+            'POST',
+            $this->getApiUrl().'/api/offers/setExternalId',
+            $this->getHeaders('application/json', true),
+            json_encode($body)
+        );
+
+        $response = $this->client->sendRequest($request);
+        $data = $this->handleResponse($response);
+
+        return (new SetExternalIdDenormalizer())->denormalize($data);
     }
 }
