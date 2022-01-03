@@ -147,7 +147,6 @@ class GamivoBotClient
 
     public function setExternalId(int $offer_id, string $external_id): SetExternalIdResponseModel
     {
-
         $body = [
             'offer_id' => $offer_id,
             'external_id' => $external_id,
@@ -165,4 +164,42 @@ class GamivoBotClient
 
         return (new SetExternalIdDenormalizer())->denormalize($data);
     }
+
+    public function productUpdateKeysAmount(int $product_id, int $amount): void
+    {
+        $body = [
+            'product_id' => $product_id,
+            'amount' => $amount,
+        ];
+
+        $request = $this->messageFactory->createRequest(
+            'POST',
+            $this->getApiUrl().'/api/products/updateKeysAmount',
+            $this->getHeaders('application/json', true),
+            json_encode($body)
+        );
+
+        $response = $this->client->sendRequest($request);
+        $this->handleResponse($response);
+
+    }
+
+    public function offerUpdateOnGamivo(int $offer_id): void
+    {
+        $body = [
+            'offer_id' => $offer_id,
+        ];
+
+        $request = $this->messageFactory->createRequest(
+            'POST',
+            $this->getApiUrl().'/api/offers/update',
+            $this->getHeaders('application/json', true),
+            json_encode($body)
+        );
+
+        $response = $this->client->sendRequest($request);
+        $this->handleResponse($response);
+
+    }
+
 }
